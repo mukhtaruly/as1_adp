@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"context"
 	"log"
 	"net"
@@ -8,10 +9,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 
 	"google.golang.org/grpc"
 
+	"payment-service/internal/repository/postgres"
 	grpcTransport "payment-service/internal/transport/grpc"
+	"payment-service/internal/usecase"
 	pb "payment-service/pkg/payment"
 )
 
@@ -28,6 +32,23 @@ func loggingInterceptor(
 }
 
 func main() {
+	connStr := os.Getenv("PAYMENT_DATABASE_URL")
+	if connStr == "" {
+		connStr = "postgres://postgres:1234@localhost:5433/payments_db?sslmode=disable"
+	}
+
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
+	repo := postgres.NewPaymentRepo(db)
+	paymentUsecase := usecase.NewPaymentUsecase(repo)
+
 	// ---------- gRPC SERVER ----------
 	grpcAddr := os.Getenv("PAYMENT_GRPC_ADDR")
 	if grpcAddr == "" {
@@ -43,7 +64,7 @@ func main() {
 		grpc.UnaryInterceptor(loggingInterceptor),
 	)
 
-	pb.RegisterPaymentServiceServer(grpcServer, &grpcTransport.PaymentServer{})
+	pb.RegisterPaymentServiceServer(grpcServer, grpcTransport.NewPaymentServer(paymentUsecase))
 
 	go func() {
 		log.Println("gRPC Payment Service running on", grpcAddr)

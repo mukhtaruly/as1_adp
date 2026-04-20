@@ -2,11 +2,7 @@ syntax = "proto3";
 
 package payment;
 
-option go_package = "payment-service/pkg/payment;payment";
-
-service PaymentService {
-  rpc ProcessPayment(PaymentRequest) returns (PaymentResponse);
-}
+option go_package = "github.com/mukhtaruly/as2/payment-service/pkg/payment";
 
 message PaymentRequest {
   string order_id = 1;
@@ -16,4 +12,21 @@ message PaymentRequest {
 message PaymentResponse {
   bool success = 1;
   string message = 2;
+}
+
+
+message GetPaymentStatsRequest {}
+
+message PaymentStats {
+  int64 total_count = 1;
+  int64 authorized_count = 2;
+  int64 declined_count = 3;
+  int64 total_amount = 4;
+}
+
+
+
+service PaymentService {
+  rpc ProcessPayment(PaymentRequest) returns (PaymentResponse);
+  rpc GetPaymentStats(GetPaymentStatsRequest) returns (PaymentStats);
 }
