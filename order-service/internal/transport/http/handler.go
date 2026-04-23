@@ -34,6 +34,14 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 
 func (h *Handler) GetOrder(c *gin.Context) {
 	id := c.Param("id")
+	if id == "" {
+		id = c.Query("id")
+	}
+
+	if id == "" {
+		c.JSON(400, gin.H{"error": "id is required"})
+		return
+	}
 
 	order, err := h.usecase.GetOrder(id)
 	if err != nil {

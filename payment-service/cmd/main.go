@@ -49,7 +49,7 @@ func main() {
 	repo := postgres.NewPaymentRepo(db)
 	paymentUsecase := usecase.NewPaymentUsecase(repo)
 
-	// ---------- gRPC SERVER ----------
+	
 	grpcAddr := os.Getenv("PAYMENT_GRPC_ADDR")
 	if grpcAddr == "" {
 		grpcAddr = ":50051"

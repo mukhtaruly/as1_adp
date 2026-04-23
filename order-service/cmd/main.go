@@ -64,6 +64,7 @@ func main() {
 	r.POST("/orders", handler.CreateOrder)
 	r.GET("/orders/:id", handler.GetOrder)
 	r.PATCH("/orders/:id/cancel", handler.CancelOrder)
+	r.DELETE("/orders/:id", handler.CancelOrder)
 
 	log.Println("Order Service running on :8081")
 	r.Run(":8081")

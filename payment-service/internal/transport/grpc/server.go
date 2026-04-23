@@ -40,7 +40,6 @@ func (s *PaymentServer) ProcessPayment(ctx context.Context, req *pb.PaymentReque
 		message = "Failed"
 	}
 
-	// ✅ ВОТ ЭТО НОВОЕ — сохраняем в БД
 	err := s.usecase.SavePayment(req.GetOrderId(), req.GetAmount(), message)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())

@@ -10,7 +10,6 @@ func NewPaymentRepo(db *sql.DB) *PaymentRepo {
 	return &PaymentRepo{db: db}
 }
 
-// SAVE payment to DB
 func (r *PaymentRepo) Save(orderID string, amount float64, status string) error {
 	_, err := r.db.Exec(`
 		INSERT INTO payments (order_id, amount, status)
@@ -19,7 +18,6 @@ func (r *PaymentRepo) Save(orderID string, amount float64, status string) error 
 	return err
 }
 
-// GET stats
 func (r *PaymentRepo) GetStats() (total int64, paid int64, failed int64, totalAmount int64, err error) {
 	err = r.db.QueryRow(`
 		SELECT

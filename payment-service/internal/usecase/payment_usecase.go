@@ -15,12 +15,12 @@ func NewPaymentUsecase(repo repository.PaymentRepository) *PaymentUsecase {
 	return &PaymentUsecase{repo: repo}
 }
 
-// SAVE payment
+
 func (u *PaymentUsecase) SavePayment(orderID string, amount float64, status string) error {
 	return u.repo.Save(orderID, amount, status)
 }
 
-// GET stats
+
 func (u *PaymentUsecase) GetStats(ctx context.Context) (*domain.PaymentStats, error) {
 	_ = ctx
 

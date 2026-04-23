@@ -24,7 +24,7 @@ func main() {
 	defer cancel()
 
 	stream, err := client.SubscribeToOrderUpdates(ctx, &pb.OrderRequest{
-		OrderId: "3b141006-2135-4656-b600-bcc5ed362269",
+		OrderId: "7fa21429-7a2d-442e-998d-ba58ccea54b4",
 	})
 	if err != nil {
 		log.Fatal(err)
