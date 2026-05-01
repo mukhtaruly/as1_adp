@@ -21,6 +21,7 @@ replace github.com/mukhtaruly/as2/payment-service => ../payment-service
 ## Run
 
 ```bash
+cd /Users/nurassylmuktaruly/Downloads/as2 && docker compose up -d postgres
 cd /Users/nurassylmuktaruly/Downloads/as2/payment-service && go run ./cmd/main.go
 cd /Users/nurassylmuktaruly/Downloads/as2/order-service && go run ./cmd/main.go
 cd /Users/nurassylmuktaruly/Downloads/as2/order-service && ORDER_ID=your-order-id go run ./client/main.go
