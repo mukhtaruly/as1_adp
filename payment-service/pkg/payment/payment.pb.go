@@ -249,7 +249,7 @@ const file_proto_payment_proto_rawDesc = "" +
 	"\ftotal_amount\x18\x04 \x01(\x03R\vtotalAmount2\xa0\x01\n" +
 	"\x0ePaymentService\x12C\n" +
 	"\x0eProcessPayment\x12\x17.payment.PaymentRequest\x1a\x18.payment.PaymentResponse\x12I\n" +
-	"\x0fGetPaymentStats\x12\x1f.payment.GetPaymentStatsRequest\x1a\x15.payment.PaymentStatsB7Z5github.com/mukhtaruly/as2/payment-service/pkg/paymentb\x06proto3"
+	"\x0fGetPaymentStats\x12\x1f.payment.GetPaymentStatsRequest\x1a\x15.payment.PaymentStatsB%Z#payment-service/pkg/payment;paymentb\x06proto3"
 
 var (
 	file_proto_payment_proto_rawDescOnce sync.Once

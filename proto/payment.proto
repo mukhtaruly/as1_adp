@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package payment;
 
-option go_package = "github.com/mukhtaruly/as2/payment-service/pkg/payment";
+option go_package = "payment-service/pkg/payment;payment";
 
 message PaymentRequest {
   string order_id = 1;
