@@ -5,6 +5,7 @@ go 1.25.5
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/lib/pq v1.10.9
+	github.com/streadway/amqp v1.1.0
 	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11
 )

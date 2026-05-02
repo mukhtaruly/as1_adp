@@ -14,7 +14,7 @@ import (
 func main() {
 	addr := os.Getenv("ORDER_SERVICE_GRPC_ADDR")
 	if addr == "" {
-		addr = "localhost:50052"
+		addr = "order-service:50052"
 	}
 
 	orderID := os.Getenv("ORDER_ID")

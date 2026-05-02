@@ -2,10 +2,6 @@ module order-service
 
 go 1.25.5
 
-require payment-service v0.0.0
-
-replace payment-service => ../payment-service
-
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/google/uuid v1.6.0

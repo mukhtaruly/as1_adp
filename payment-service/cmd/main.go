@@ -34,16 +34,24 @@ func loggingInterceptor(
 func main() {
 	connStr := os.Getenv("PAYMENT_DATABASE_URL")
 	if connStr == "" {
-		connStr = "postgres://postgres:1234@localhost:5433/payments_db?sslmode=disable"
+		connStr = "postgres://postgres:1234@postgres:5432/payments_db?sslmode=disable"
 	}
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
+	for i := 0; i < 10; i++ {
+		err = db.Ping()
+		if err == nil {
+			break
+		}
+		log.Println("Waiting for DB...", err)
+		time.Sleep(2 * time.Second)
+	}
 
-	if err := db.Ping(); err != nil {
-		log.Fatal(err)
+	if err != nil {
+		log.Fatal("DB not ready:", err)
 	}
 
 	repo := postgres.NewPaymentRepo(db)

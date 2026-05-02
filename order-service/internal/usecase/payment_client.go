@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	pb "payment-service/pkg/payment"
+	pb "order-service/pkg/payment"
 
 	"google.golang.org/grpc"
 )
@@ -19,7 +19,7 @@ type PaymentClient struct {
 func NewPaymentClient() *PaymentClient {
 	addr := os.Getenv("PAYMENT_SERVICE_ADDR")
 	if addr == "" {
-		addr = "localhost:50051"
+		addr = "payment-service:50051"
 	}
 
 	conn, err := grpc.Dial(
