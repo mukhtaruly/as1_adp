@@ -1,55 +1,154 @@
-# Assignment 2: gRPC Microservices
+Assignment 3: Event-Driven Architecture (EDA) with RabbitMQ
 
-## Repositories
+Overview
 
-- Proto repository: `https://github.com/mukhtaruly/mukhtaruly-proto`
-- Generated repository: `https://github.com/mukhtaruly/mukhtaruly-generated`
+This project extends the previous gRPC-based microservices system by introducing Event-Driven Architecture (EDA) using RabbitMQ.
 
-Note: after publishing `mukhtaruly-generated` as a real Go module tag like `v1.0.0`, replace this local dependency in [order-service/go.mod](/Users/nurassylmuktaruly/Downloads/as2/order-service/go.mod:1):
+The system consists of three microservices:
 
-```bash
-cd /Users/nurassylmuktaruly/Downloads/as2/order-service
-go get github.com/mukhtaruly/mukhtaruly-generated@v1.0.0
-```
+* Order Service (HTTP + gRPC client)
+* Payment Service (gRPC server + RabbitMQ producer)
+* Notification Service (RabbitMQ consumer)
 
-Then remove:
+⸻
 
-```go
-replace github.com/mukhtaruly/as2/payment-service => ../payment-service
-```
+Architecture Diagram
 
-## Run
+(Добавь сюда свою картинку диаграммы, которую мы сделали)
 
-```bash
-cd /Users/nurassylmuktaruly/Downloads/as2 && docker compose up -d postgres
-cd /Users/nurassylmuktaruly/Downloads/as2/payment-service && go run ./cmd/main.go
-cd /Users/nurassylmuktaruly/Downloads/as2/order-service && go run ./cmd/main.go
-cd /Users/nurassylmuktaruly/Downloads/as2/order-service && ORDER_ID=your-order-id go run ./client/main.go
-```
+⸻
 
-## Environment Variables
+Tech Stack
 
-| Variable | Service | Default | Description |
-|---|---|---|---|
-| `DATABASE_URL` | `order-service` | `postgres://postgres:1234@localhost:5433/orders_db?sslmode=disable` | PostgreSQL connection string |
-| `ORDER_SERVICE_GRPC_ADDR` | `order-service` | `:50052` | gRPC address for order streaming server |
-| `PAYMENT_SERVICE_ADDR` | `order-service` | `localhost:50051` | Address of payment gRPC server used by order-service client |
-| `PAYMENT_GRPC_ADDR` | `payment-service` | `:50051` | gRPC address for payment-service |
-| `ORDER_ID` | `order-service/client` | `your-order-id` | Order ID for streaming demo client |
+* Golang
+* gRPC
+* RabbitMQ
+* PostgreSQL
+* Docker & Docker Compose
 
-## Streaming Demo
+⸻
 
-1. Start the streaming client for an existing order ID.
-2. In another terminal run:
+How to Run
 
-```sql
-UPDATE orders SET status='Shipped' WHERE id='your-order-id';
-```
+docker-compose up –build
 
-3. The client prints the new status immediately from the gRPC stream.
+⸻
 
-## Streaming Screenshot
+API
 
-Add your screenshot here before submission, for example:
+Create Order:
 
-`docs/streaming-client.png`
+curl -X POST http://localhost:8081/orders 
+-H “Content-Type: application/json” 
+-d ‘{“user_id”:1,“amount”:100}’
+
+⸻
+
+Event Flow
+
+1. Client sends HTTP request to Order Service
+2. Order Service saves order to PostgreSQL
+3. Order Service calls Payment Service via gRPC
+4. Payment Service processes payment
+5. Payment Service saves payment to DB (transaction commit)
+6. Payment Service publishes event to RabbitMQ (payment.completed)
+7. Notification Service consumes the event
+8. Notification Service logs notification (simulates email)
+
+⸻
+
+Message Format
+
+{
+“order_id”: “uuid”,
+“amount”: 100,
+“status”: “Paid”
+}
+
+⸻
+
+Reliability & Delivery Guarantees
+
+Manual ACK:
+
+* Auto-ack is disabled
+* Messages are acknowledged only after successful processing
+
+Durable Queue:
+
+* Queue payment.completed is durable
+* Messages survive broker restart
+
+Retry Mechanism:
+
+* Services wait for DB and RabbitMQ before starting
+
+⸻
+
+Idempotency Strategy
+
+To avoid duplicate processing:
+
+* Each message has unique order_id
+* Processed messages can be tracked
+* Duplicate events are ignored
+
+⸻
+
+Docker Services
+
+* postgres
+* rabbitmq
+* order-service
+* payment-service
+* notification-service
+
+⸻
+
+Key Design Principles
+
+* At-least-once delivery
+* Loose coupling
+* Separation of concerns
+* Fault tolerance
+
+⸻
+
+RabbitMQ UI
+
+http://localhost:15672
+login: guest / guest
+
+⸻
+
+Health Check
+
+curl http://localhost:8081/health
+curl http://localhost:8082/health
+
+⸻
+
+Project Structure
+
+.
+├── order-service
+├── payment-service
+├── notification-service
+├── db
+├── proto
+├── docker-compose.yml
+└── README.md
+
+⸻
+
+Result
+
+* Microservices communicate via gRPC and RabbitMQ
+* Event-driven flow is implemented
+* System runs полностью через Docker
+
+⸻
+
+Conclusion
+
+This project demonstrates the transition from synchronous gRPC communication to asynchronous event-driven architecture using message queues, improving scalability, reliability, and decoupling between services.
